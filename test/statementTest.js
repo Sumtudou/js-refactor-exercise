@@ -41,7 +41,6 @@ test('BigCo no performances', t => {
     };
     //when
     const result = statement(invoice, plays);
-    console.log(result);
 
     let expected = "Statement for BigCo\n" +
         "Amount owed is $0.00\n" +
@@ -72,7 +71,6 @@ test('BigCo number all less than 30 or 20', t => {
     //when
     const result = statement(invoice, plays);
 
-    console.log(result);
     let expected = "Statement for BigCo\n" +
         " the-tragedy: $400.00 (28 seats)\n" +
         " isComedy: $357.00 (19 seats)\n" +
@@ -102,7 +100,6 @@ test('BigCo 35 tragdy 19 comedy', t => {
     //when
     const result = statement(invoice, plays);
 
-    console.log(result);
     let expected = "Statement for BigCo\n" +
         " the-tragedy: $450.00 (35 seats)\n" +
         " isComedy: $357.00 (19 seats)\n" +
