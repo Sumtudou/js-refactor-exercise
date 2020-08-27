@@ -1,28 +1,25 @@
 function statement(invoice, plays) {
     let totalAmount = 0;
     let volumeCredits = 0;
-    let result = `Statement for ${invoice.customer}\n`;
-    const format = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-    }).format;
+
     for (let perf of invoice.performances) {
         const play = plays[perf.playID];
         let thisAmount = calculateAmount(play, perf);
         // add volume credits
-        volumeCredits += Math.max(perf.audience - 30, 0);
-        // add extra credit for every ten comedy attendees
-        if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
+        volumeCredits = calCredits(volumeCredits, perf.audience, play.type);
         //print line for this order
-        result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
         totalAmount += thisAmount;
     }
-    result += `Amount owed is ${format(totalAmount / 100)}\n`;
-    result += `You earned ${volumeCredits} credits \n`;
-    return result;
+    return getTxtFormatResult(invoice, plays, totalAmount, volumeCredits);
 }
 
+function calCredits(volumeCredits, audience, playType) {
+    volumeCredits += Math.max(audience - 30, 0);
+    // add extra credit for every ten comedy attendees
+    if ('comedy' === playType)
+        volumeCredits += Math.floor(audience / 5);
+    return volumeCredits;
+}
 
 function calculateAmount(play, perf) {
     let thisAmount = 0;
@@ -44,6 +41,24 @@ function calculateAmount(play, perf) {
             throw new Error(`unknown type: ${play.type}`);
     }
     return thisAmount;
+}
+
+function getTxtFormatResult(invoice, plays, totalAmount, volumeCredits) {
+    let result = `Statement for ${invoice.customer}\n`;
+    const format = new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+    }).format;
+
+    for (let perf of invoice.performances) {
+        const play = plays[perf.playID];
+        let thisAmount = calculateAmount(play, perf);
+        result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
+    }
+    result += `Amount owed is ${format(totalAmount / 100)}\n`;
+    result += `You earned ${volumeCredits} credits \n`;
+    return result;
 }
 
 module.exports = {
