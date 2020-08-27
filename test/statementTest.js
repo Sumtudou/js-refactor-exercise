@@ -7,11 +7,11 @@ test('BigCo number all over 30', t => {
         'customer': 'BigCo',
         'performances': [
             {
-                'playID': 'hamlet',
+                'playID': 'the-tragedy',
                 'audience': 55,
             },
             {
-                'playID': 'as-like',
+                'playID': 'the-comedy',
                 'audience': 35,
             },
             {
@@ -24,8 +24,8 @@ test('BigCo number all over 30', t => {
     const result = statement(invoice, plays);
 
     let expected = "Statement for BigCo\n" +
-        " Hamlet: $650.00 (55 seats)\n" +
-        " As You Like It: $580.00 (35 seats)\n" +
+        " the-tragedy: $650.00 (55 seats)\n" +
+        " isComedy: $580.00 (35 seats)\n" +
         " Othello: $500.00 (40 seats)\n" +
         "Amount owed is $1,730.00\n" +
         "You earned 47 credits \n";
@@ -56,11 +56,11 @@ test('BigCo number all less than 30 or 20', t => {
         'customer': 'BigCo',
         'performances': [
             {
-                'playID': 'hamlet',
+                'playID': 'the-tragedy',
                 'audience': 28,
             },
             {
-                'playID': 'as-like',
+                'playID': 'the-comedy',
                 'audience': 19,
             },
             {
@@ -74,8 +74,8 @@ test('BigCo number all less than 30 or 20', t => {
 
     console.log(result);
     let expected = "Statement for BigCo\n" +
-        " Hamlet: $400.00 (28 seats)\n" +
-        " As You Like It: $357.00 (19 seats)\n" +
+        " the-tragedy: $400.00 (28 seats)\n" +
+        " isComedy: $357.00 (19 seats)\n" +
         " Othello: $400.00 (18 seats)\n" +
         "Amount owed is $1,157.00\n" +
         "You earned 3 credits \n";
@@ -84,13 +84,41 @@ test('BigCo number all less than 30 or 20', t => {
 });
 
 
+test('BigCo 35 tragdy 19 comedy', t => {
+    //given
+    const invoice = {
+        'customer': 'BigCo',
+        'performances': [
+            {
+                'playID': 'the-tragedy',
+                'audience': 35,
+            },
+            {
+                'playID': 'the-comedy',
+                'audience': 19,
+            }
+        ],
+    };
+    //when
+    const result = statement(invoice, plays);
+
+    console.log(result);
+    let expected = "Statement for BigCo\n" +
+        " the-tragedy: $450.00 (35 seats)\n" +
+        " isComedy: $357.00 (19 seats)\n" +
+        "Amount owed is $807.00\n" +
+        "You earned 8 credits \n"
+    //then
+    t.is(result, expected);
+});
+
 const plays = {
-    'hamlet': {
-        'name': 'Hamlet',
+    'the-tragedy': {
+        'name': 'the-tragedy',
         'type': 'tragedy',
     },
-    'as-like': {
-        'name': 'As You Like It',
+    'the-comedy': {
+        'name': 'isComedy',
         'type': 'comedy',
     },
     'othello': {
