@@ -1,17 +1,24 @@
 function statement(invoice, plays) {
-    let totalAmount = 0;
     let volumeCredits = 0;
+    for (let perf of invoice.performances) {
+        const play = plays[perf.playID];
+        volumeCredits = calCredits(volumeCredits, perf.audience, play.type);
+        //print line for this order
+    }
+    let totalAmount = calculateTotalAmount(invoice, plays);
+    return getTxtFormatResult(invoice, plays, totalAmount, volumeCredits);
+}
 
+function calculateTotalAmount(invoice, plays) {
+    let totalAmount = 0;
     for (let perf of invoice.performances) {
         const play = plays[perf.playID];
         let thisAmount = calculateAmount(play, perf);
-        // add volume credits
-        volumeCredits = calCredits(volumeCredits, perf.audience, play.type);
-        //print line for this order
         totalAmount += thisAmount;
     }
-    return getTxtFormatResult(invoice, plays, totalAmount, volumeCredits);
+    return totalAmount;
 }
+
 
 function calCredits(volumeCredits, audience, playType) {
     volumeCredits += Math.max(audience - 30, 0);
