@@ -1,7 +1,5 @@
 function statement(invoice, plays) {
-    let volumeCredits = calculateTotalCredits(invoice, plays);
-    let totalAmount = calculateTotalAmount(invoice, plays);
-    return getTxtFormatResult(invoice, plays, totalAmount, volumeCredits);
+    return getTxtFormatResult(invoice, plays);
 }
 
 function calculateTotalCredits(invoice, plays) {
@@ -42,11 +40,10 @@ function calculateAmount(play, perf) {
             }
             break;
         case 'comedy':
-            thisAmount = 30000;
+            thisAmount = 30000 + 300 * perf.audience;
             if (perf.audience > 20) {
                 thisAmount += 10000 + 500 * (perf.audience - 20);
             }
-            thisAmount += 300 * perf.audience;
             break;
         default:
             throw new Error(`unknown type: ${play.type}`);
@@ -56,10 +53,12 @@ function calculateAmount(play, perf) {
 
 
 
-function getTxtFormatResult(invoice, plays, totalAmount, volumeCredits) {
-    let result = `Statement for ${invoice.customer}\n`;
+function getTxtFormatResult(invoice, plays) {
+    let totalAmount = calculateTotalAmount(invoice, plays);
     const format = numberFormat();
+    let volumeCredits = calculateTotalCredits(invoice, plays);
 
+    let result = `Statement for ${invoice.customer}\n`;
     for (let perf of invoice.performances) {
         const play = plays[perf.playID];
         let thisAmount = calculateAmount(play, perf);
