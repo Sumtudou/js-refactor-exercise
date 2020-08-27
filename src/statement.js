@@ -2,6 +2,24 @@ function statement(invoice, plays) {
     return getTxtFormatResult(invoice, plays);
 }
 
+function htmlStatement(invoice, plays){
+    let data = getData(invoice, plays);
+    const format = numberFormat();
+    let result =
+    `<h1>Statement for ${invoice.customer}</h1>\n` +
+    `<table>\n` +
+    `<tr><th>play</th><th>seats</th><th>cost</th></tr>` ;
+    for(let item in data.allLine){
+        let dataItem = data.allLine[item];
+        result +=` <tr><td>${dataItem.playName}</td><td>${dataItem.seats}</td><td>${format(dataItem.thisAmount / 100)}</td></tr>\n`
+    }
+    result += `</table>\n` +
+    `<p>Amount owed is <em>${format(data.totalAmount / 100)}</em></p>\n` +
+    `<p>You earned <em>${data.credits}</em> credits</p>\n`
+    return result;
+}
+
+
 function calculateTotalCredits(invoice, plays) {
     let volumeCredits = 0;
     for (let perf of invoice.performances) {
@@ -20,7 +38,6 @@ function calculateTotalAmount(invoice, plays) {
     }
     return totalAmount;
 }
-
 
 function calThisCredits(volumeCredits, audience, playType) {
     volumeCredits += Math.max(audience - 30, 0);
@@ -91,5 +108,5 @@ function numberFormat() {
 }
 
 module.exports = {
-    statement,
+    statement,htmlStatement
 };
