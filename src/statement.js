@@ -2,7 +2,7 @@ function statement(invoice, plays) {
     let volumeCredits = 0;
     for (let perf of invoice.performances) {
         const play = plays[perf.playID];
-        volumeCredits = calCredits(volumeCredits, perf.audience, play.type);
+        volumeCredits = calThisCredits(volumeCredits, perf.audience, play.type);
         //print line for this order
     }
     let totalAmount = calculateTotalAmount(invoice, plays);
@@ -20,7 +20,7 @@ function calculateTotalAmount(invoice, plays) {
 }
 
 
-function calCredits(volumeCredits, audience, playType) {
+function calThisCredits(volumeCredits, audience, playType) {
     volumeCredits += Math.max(audience - 30, 0);
     // add extra credit for every ten comedy attendees
     if ('comedy' === playType)
