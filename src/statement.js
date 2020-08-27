@@ -54,13 +54,11 @@ function calculateAmount(play, perf) {
     return thisAmount;
 }
 
+
+
 function getTxtFormatResult(invoice, plays, totalAmount, volumeCredits) {
     let result = `Statement for ${invoice.customer}\n`;
-    const format = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-    }).format;
+    const format = numberFormat();
 
     for (let perf of invoice.performances) {
         const play = plays[perf.playID];
@@ -70,6 +68,14 @@ function getTxtFormatResult(invoice, plays, totalAmount, volumeCredits) {
     result += `Amount owed is ${format(totalAmount / 100)}\n`;
     result += `You earned ${volumeCredits} credits \n`;
     return result;
+}
+
+function numberFormat() {
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 2,
+    }).format;
 }
 
 module.exports = {
