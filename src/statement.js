@@ -51,21 +51,34 @@ function calculateAmount(play, perf) {
     return thisAmount;
 }
 
-
-
-function getTxtFormatResult(invoice, plays) {
-    let totalAmount = calculateTotalAmount(invoice, plays);
-    const format = numberFormat();
-    let volumeCredits = calculateTotalCredits(invoice, plays);
-
-    let result = `Statement for ${invoice.customer}\n`;
+function getData(invoice, plays){
+    let data = {};
+    let item = [];
     for (let perf of invoice.performances) {
         const play = plays[perf.playID];
-        let thisAmount = calculateAmount(play, perf);
-        result += ` ${play.name}: ${format(thisAmount / 100)} (${perf.audience} seats)\n`;
+        let line = {
+            'thisAmount':calculateAmount(play, perf),
+            'seats':perf.audience,
+            'playName':play.name
+        };
+        item.push(line);
     }
-    result += `Amount owed is ${format(totalAmount / 100)}\n`;
-    result += `You earned ${volumeCredits} credits \n`;
+    data.allLine = item;
+    data.credits = calculateTotalCredits(invoice, plays);
+    data.totalAmount = calculateTotalAmount(invoice, plays);
+    return data;
+}
+
+function getTxtFormatResult(invoice, plays) {
+    let data = getData(invoice, plays);
+    const format = numberFormat();
+    let result = `Statement for ${invoice.customer}\n`;
+    for(let item in data.allLine){
+        let dataItem = data.allLine[item];
+        result += ` ${dataItem.playName}: ${format(dataItem.thisAmount / 100)} (${dataItem.seats} seats)\n`;
+    }
+    result += `Amount owed is ${format(data.totalAmount / 100)}\n`;
+    result += `You earned ${data.credits} credits \n`;
     return result;
 }
 
