@@ -2,21 +2,8 @@ function statement(invoice, plays) {
     return getTxtFormatResult(getData(invoice, plays));
 }
 
-function htmlStatement(invoice, plays){
+function htmlStatement(invoice, plays) {
     return getHtmlFormatResult(getData(invoice, plays));
-}
-function getHtmlFormatResult(data){
-    let result =
-        `<h1>Statement for ${data.customer}</h1>\n` +
-        `<table>\n` +
-        `<tr><th>play</th><th>seats</th><th>cost</th></tr>` ;
-    for(let dataItem of data.allLine){
-        result +=` <tr><td>${dataItem.playName}</td><td>${dataItem.seats}</td><td>${numberFormat(dataItem.thisAmount)}</td></tr>\n`
-    }
-    result += `</table>\n` +
-        `<p>Amount owed is <em>${numberFormat(data.totalAmount)}</em></p>\n` +
-        `<p>You earned <em>${data.credits}</em> credits</p>\n`
-    return result;
 }
 
 function calculateTotalCredits(invoice, plays) {
@@ -67,15 +54,15 @@ function calculateAmount(play, perf) {
     return thisAmount;
 }
 
-function getData(invoice, plays){
+function getData(invoice, plays) {
     let data = {};
     let item = [];
     for (let perf of invoice.performances) {
         const play = plays[perf.playID];
         let line = {
-            'thisAmount':calculateAmount(play, perf),
-            'seats':perf.audience,
-            'playName':play.name
+            'thisAmount': calculateAmount(play, perf),
+            'seats': perf.audience,
+            'playName': play.name
         };
         item.push(line);
     }
@@ -87,13 +74,27 @@ function getData(invoice, plays){
 }
 
 function getTxtFormatResult(data) {
-   // let data = getData(invoice, plays);
+    // let data = getData(invoice, plays);
     let result = `Statement for ${data.customer}\n`;
-    for(let dataItem of data.allLine){
+    for (let dataItem of data.allLine) {
         result += ` ${dataItem.playName}: ${numberFormat(dataItem.thisAmount)} (${dataItem.seats} seats)\n`;
     }
     result += `Amount owed is ${numberFormat(data.totalAmount)}\n`;
     result += `You earned ${data.credits} credits \n`;
+    return result;
+}
+
+function getHtmlFormatResult(data) {
+    let result =
+        `<h1>Statement for ${data.customer}</h1>\n` +
+        `<table>\n` +
+        `<tr><th>play</th><th>seats</th><th>cost</th></tr>`;
+    for (let dataItem of data.allLine) {
+        result += ` <tr><td>${dataItem.playName}</td><td>${dataItem.seats}</td><td>${numberFormat(dataItem.thisAmount)}</td></tr>\n`
+    }
+    result += `</table>\n` +
+        `<p>Amount owed is <em>${numberFormat(data.totalAmount)}</em></p>\n` +
+        `<p>You earned <em>${data.credits}</em> credits</p>\n`
     return result;
 }
 
@@ -102,9 +103,9 @@ function numberFormat(amount) {
         style: 'currency',
         currency: 'USD',
         minimumFractionDigits: 2,
-    }).format(amount/100);
+    }).format(amount / 100);
 }
 
 module.exports = {
-    statement,htmlStatement
+    statement, htmlStatement
 };
