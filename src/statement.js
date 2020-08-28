@@ -4,17 +4,15 @@ function statement(invoice, plays) {
 
 function htmlStatement(invoice, plays){
     let data = getData(invoice, plays);
-    const format = numberFormat();
     let result =
     `<h1>Statement for ${invoice.customer}</h1>\n` +
     `<table>\n` +
     `<tr><th>play</th><th>seats</th><th>cost</th></tr>` ;
-    for(let item in data.allLine){
-        let dataItem = data.allLine[item];
-        result +=` <tr><td>${dataItem.playName}</td><td>${dataItem.seats}</td><td>${format(dataItem.thisAmount / 100)}</td></tr>\n`
+    for(let dataItem of data.allLine){
+        result +=` <tr><td>${dataItem.playName}</td><td>${dataItem.seats}</td><td>${numberFormat(dataItem.thisAmount)}</td></tr>\n`
     }
     result += `</table>\n` +
-    `<p>Amount owed is <em>${format(data.totalAmount / 100)}</em></p>\n` +
+    `<p>Amount owed is <em>${numberFormat(data.totalAmount)}</em></p>\n` +
     `<p>You earned <em>${data.credits}</em> credits</p>\n`
     return result;
 }
@@ -88,23 +86,21 @@ function getData(invoice, plays){
 
 function getTxtFormatResult(invoice, plays) {
     let data = getData(invoice, plays);
-    const format = numberFormat();
     let result = `Statement for ${invoice.customer}\n`;
-    for(let item in data.allLine){
-        let dataItem = data.allLine[item];
-        result += ` ${dataItem.playName}: ${format(dataItem.thisAmount / 100)} (${dataItem.seats} seats)\n`;
+    for(let dataItem of data.allLine){
+        result += ` ${dataItem.playName}: ${numberFormat(dataItem.thisAmount)} (${dataItem.seats} seats)\n`;
     }
-    result += `Amount owed is ${format(data.totalAmount / 100)}\n`;
+    result += `Amount owed is ${numberFormat(data.totalAmount)}\n`;
     result += `You earned ${data.credits} credits \n`;
     return result;
 }
 
-function numberFormat() {
+function numberFormat(amount) {
     return new Intl.NumberFormat('en-US', {
         style: 'currency',
         currency: 'USD',
         minimumFractionDigits: 2,
-    }).format;
+    }).format(amount/100);
 }
 
 module.exports = {
