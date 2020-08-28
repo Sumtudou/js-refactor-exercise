@@ -1,22 +1,23 @@
 function statement(invoice, plays) {
-    return getTxtFormatResult(invoice, plays);
+    return getTxtFormatResult(getData(invoice, plays));
 }
 
 function htmlStatement(invoice, plays){
-    let data = getData(invoice, plays);
+    return getHtmlFormatResult(getData(invoice, plays));
+}
+function getHtmlFormatResult(data){
     let result =
-    `<h1>Statement for ${invoice.customer}</h1>\n` +
-    `<table>\n` +
-    `<tr><th>play</th><th>seats</th><th>cost</th></tr>` ;
+        `<h1>Statement for ${data.customer}</h1>\n` +
+        `<table>\n` +
+        `<tr><th>play</th><th>seats</th><th>cost</th></tr>` ;
     for(let dataItem of data.allLine){
         result +=` <tr><td>${dataItem.playName}</td><td>${dataItem.seats}</td><td>${numberFormat(dataItem.thisAmount)}</td></tr>\n`
     }
     result += `</table>\n` +
-    `<p>Amount owed is <em>${numberFormat(data.totalAmount)}</em></p>\n` +
-    `<p>You earned <em>${data.credits}</em> credits</p>\n`
+        `<p>Amount owed is <em>${numberFormat(data.totalAmount)}</em></p>\n` +
+        `<p>You earned <em>${data.credits}</em> credits</p>\n`
     return result;
 }
-
 
 function calculateTotalCredits(invoice, plays) {
     let volumeCredits = 0;
@@ -81,12 +82,13 @@ function getData(invoice, plays){
     data.allLine = item;
     data.credits = calculateTotalCredits(invoice, plays);
     data.totalAmount = calculateTotalAmount(invoice, plays);
+    data.customer = invoice.customer;
     return data;
 }
 
-function getTxtFormatResult(invoice, plays) {
-    let data = getData(invoice, plays);
-    let result = `Statement for ${invoice.customer}\n`;
+function getTxtFormatResult(data) {
+   // let data = getData(invoice, plays);
+    let result = `Statement for ${data.customer}\n`;
     for(let dataItem of data.allLine){
         result += ` ${dataItem.playName}: ${numberFormat(dataItem.thisAmount)} (${dataItem.seats} seats)\n`;
     }
